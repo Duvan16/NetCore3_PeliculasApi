@@ -13,5 +13,7 @@ namespace NetCore3_PeliculasApi.DTOs
         [PesoArchivoValidacion(PesoMaximoEnMegaBytes: 4)]
         [TipoArchivoValidacion(grupoTipoArchivo: GrupoTipoArchivo.Imagen)]
         public IFormFile Poster { get; set; }
+
+        //public List<int> GeneroIDs { get; set; }
     }
 }
