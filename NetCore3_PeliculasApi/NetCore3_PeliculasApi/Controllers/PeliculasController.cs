@@ -93,16 +93,21 @@ namespace NetCore3_PeliculasApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "obtenerPelicula")]
-        public async Task<ActionResult<PeliculaDTO>> Get(int id)
+        public async Task<ActionResult<PeliculaDetalleDTO>> Get(int id)
         {
-            var entidad = await context.Peliculas.FirstOrDefaultAsync(x => x.Id == id);
+            var entidad = await context.Peliculas
+                .Include(x => x.PeliculasActores).ThenInclude(x => x.Actor)
+                .Include(x => x.PeliculasGeneros).ThenInclude(x => x.Genero)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (entidad == null)
             {
                 return NotFound();
             }
 
-            var dto = mapper.Map<PeliculaDTO>(entidad);
+            entidad.PeliculasActores = entidad.PeliculasActores.OrderBy(x => x.Orden).ToList();
+
+            var dto = mapper.Map<PeliculaDetalleDTO>(entidad);
             return dto;
         }
 
