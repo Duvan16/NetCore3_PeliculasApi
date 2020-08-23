@@ -74,6 +74,7 @@ namespace NetCore3_PeliculasApi.Controllers
                 }
             }
 
+            AsignarOrdenActores(entidad);
             context.Add(entidad);
             await context.SaveChangesAsync();
             var peliculaDTO = mapper.Map<PeliculaDTO>(entidad);
@@ -84,7 +85,10 @@ namespace NetCore3_PeliculasApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromForm] PeliculaCreacionDTO peliculaCreacionDTO)
         {
-            var peliculaDB = await context.Peliculas.FirstOrDefaultAsync(x => x.Id == id);
+            var peliculaDB = await context.Peliculas
+                .Include(x => x.PeliculasActores)
+                .Include(x => x.PeliculasGeneros)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (peliculaDB == null)
             {
@@ -109,6 +113,7 @@ namespace NetCore3_PeliculasApi.Controllers
             //var entidad = mapper.Map<pelicula>(peliculaCreacionDTO);
             //entidad.Id = id;
             //context.Entry(entidad).State = EntityState.Modified;
+            AsignarOrdenActores(peliculaDB);
             await context.SaveChangesAsync();
             return NoContent();
         }
@@ -166,6 +171,17 @@ namespace NetCore3_PeliculasApi.Controllers
             await context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private void AsignarOrdenActores(Pelicula pelicula)
+        {
+            if (!pelicula.PeliculasActores.Equals(null))
+            {
+                for (int i = 0; i < pelicula.PeliculasActores.Count; i++)
+                {
+                    pelicula.PeliculasActores[i].Orden = i;
+                }
+            }
         }
     }
 }

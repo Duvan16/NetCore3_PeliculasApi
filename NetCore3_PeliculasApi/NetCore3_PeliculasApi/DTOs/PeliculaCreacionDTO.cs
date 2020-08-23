@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetCore3_PeliculasApi.Helpers;
 using NetCore3_PeliculasApi.Validaciones;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,10 @@ namespace NetCore3_PeliculasApi.DTOs
         [TipoArchivoValidacion(grupoTipoArchivo: GrupoTipoArchivo.Imagen)]
         public IFormFile Poster { get; set; }
 
-        //public List<int> GeneroIDs { get; set; }
+        [ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
+        public List<int> GeneroIDs { get; set; }
+
+        [ModelBinder(BinderType = typeof(TypeBinder<List<ActorPeliculasCreacionDTO>>))]
+        public List<ActorPeliculasCreacionDTO> Actores { get; set; }
     }
 }
