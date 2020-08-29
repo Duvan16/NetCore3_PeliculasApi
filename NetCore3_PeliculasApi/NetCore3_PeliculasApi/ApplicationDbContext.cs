@@ -24,6 +24,10 @@ namespace NetCore3_PeliculasApi
             modelBuilder.Entity<PeliculasGeneros>()
                 .HasKey(x => new { x.GeneroId, x.PeliculaId });
 
+            //Llave compuesta PeliculaID y SalaDeCineId
+            modelBuilder.Entity<PeliculasSalasDeCine>()
+                .HasKey(x => new { x.PeliculaId, x.SalaDeCineId });
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -33,5 +37,6 @@ namespace NetCore3_PeliculasApi
         public DbSet<Pelicula> Peliculas { get; set; }
         public DbSet<PeliculasActores> PeliculasActores { get; set; }
         public DbSet<PeliculasGeneros> PeliculasGeneros { get; set; }
+        public DbSet<PeliculasSalasDeCine> PeliculasSalasDeCine { get; set; }
     }
 }
