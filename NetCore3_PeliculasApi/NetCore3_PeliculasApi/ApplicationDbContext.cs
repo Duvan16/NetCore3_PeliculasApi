@@ -38,5 +38,8 @@ namespace NetCore3_PeliculasApi
         public DbSet<PeliculasActores> PeliculasActores { get; set; }
         public DbSet<PeliculasGeneros> PeliculasGeneros { get; set; }
         public DbSet<PeliculasSalasDeCine> PeliculasSalasDeCine { get; set; }
+        public DbSet<SalaDeCine> SalaDeCine { get; set; }
+
+
     }
 }

@@ -12,7 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NetCore3_PeliculasApi.Helpers;
 using NetCore3_PeliculasApi.Servicios;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 
 namespace NetCore3_PeliculasApi
 {
@@ -33,8 +36,20 @@ namespace NetCore3_PeliculasApi
             services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
             services.AddHttpContextAccessor();
 
+            services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
+
+            services.AddSingleton(provider =>
+                new MapperConfiguration(config =>
+                {
+                    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+                    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+                }).CreateMapper()
+            );
+
             services.AddDbContext<ApplicationDbContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+           options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+           sqlServerOptions => sqlServerOptions.UseNetTopologySuite()
+            ));
 
             services.AddControllers()
                 .AddNewtonsoftJson();
