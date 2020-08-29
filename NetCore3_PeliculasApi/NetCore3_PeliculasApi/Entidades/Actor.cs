@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetCore3_PeliculasApi.Entidades
 {
-    public class Actor
+    public class Actor: IId
     {
         public int Id { get; set; }
 

@@ -19,7 +19,7 @@ namespace NetCore3_PeliculasApi.Controllers
 {
     [ApiController]
     [Route("api/Peliculas")]
-    public class PeliculasController : ControllerBase
+    public class PeliculasController : CustomBaseController
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
@@ -32,6 +32,7 @@ namespace NetCore3_PeliculasApi.Controllers
             IAlmacenadorArchivos almacenadorArchivos,
             ILogger<PeliculasController> logger
             )
+            :base(context,mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -192,36 +193,10 @@ namespace NetCore3_PeliculasApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<PeliculaPatchDTO> patchDocument)
+        public async Task<ActionResult> Patch(int id, 
+            [FromBody] JsonPatchDocument<PeliculaPatchDTO> patchDocument)
         {
-            if (patchDocument.Equals(null))
-            {
-                return BadRequest();
-            }
-
-            var entidadDB = await context.Peliculas.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (entidadDB.Equals(null))
-            {
-                return NotFound();
-            }
-
-            var entidadDTO = mapper.Map<PeliculaPatchDTO>(entidadDB);
-
-            patchDocument.ApplyTo(entidadDTO, ModelState);
-
-            var esValido = TryValidateModel(entidadDTO);
-
-            if (!esValido)
-            {
-                return BadRequest(ModelState);
-            }
-
-            mapper.Map(entidadDTO, entidadDB);
-
-            await context.SaveChangesAsync();
-
-            return NoContent();
+            return await Patch<Pelicula, PeliculaPatchDTO>(id, patchDocument);
         }
 
         [HttpDelete("{id}")]
