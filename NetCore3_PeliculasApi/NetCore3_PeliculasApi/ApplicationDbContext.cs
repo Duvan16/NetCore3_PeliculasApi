@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NetCore3_PeliculasApi.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace NetCore3_PeliculasApi
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -27,6 +30,42 @@ namespace NetCore3_PeliculasApi
             //Llave compuesta PeliculaID y SalaDeCineId
             modelBuilder.Entity<PeliculasSalasDeCine>()
                 .HasKey(x => new { x.PeliculaId, x.SalaDeCineId });
+
+            var rolAdminId = "5de7957b-1f82-4b64-855c-3eaccdb9316a";
+            var usuarioAdminId = "67ae3fce-2cf9-48d8-a61c-6c851293442e";
+
+            var roleAdmin = new IdentityRole()
+            {
+                Id = rolAdminId,
+                Name = "Admin",
+                NormalizedName = "Admin"
+            };
+
+            var passwordHasher = new PasswordHasher<IdentityUser>();
+
+            var username = "duvan@gmail.com";
+
+            var usuarioAdmin = new IdentityUser()
+            {
+                Id = usuarioAdminId,
+                UserName = username,
+                NormalizedUserName = username,
+                Email = username,
+                PasswordHash = passwordHasher.HashPassword(null, "Aa1313151!")
+            };
+
+            //modelBuilder.Entity<IdentityUser>().HasData(usuarioAdmin);
+
+            //modelBuilder.Entity<IdentityRole>().HasData(roleAdmin);
+
+            //modelBuilder.Entity<IdentityUserClaim<string>>()
+            //    .HasData(new IdentityUserClaim<string>()
+            //    {
+            //        Id = 1,
+            //        ClaimType = ClaimTypes.Role,
+            //        UserId = usuarioAdminId,
+            //        ClaimValue = "Admin"
+            //    });
 
             base.OnModelCreating(modelBuilder);
         }
