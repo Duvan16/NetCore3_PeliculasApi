@@ -93,7 +93,7 @@ namespace NetCore3_PeliculasApi.Controllers
 
             var entidadDB = await context.Set<TEntidad>().FirstOrDefaultAsync(x => x.Id == id);
 
-            if (entidadDB.Equals(null))
+            if (entidadDB == null)
             {
                 return NotFound();
             }
