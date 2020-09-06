@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace NetCore3_PeliculasApi.Tests.PruebasUnitarias
 {
     [TestClass]
-    public class PeliculasControllerTest : BasePruebas
+    public class PeliculasControllerTests : BasePruebas
     {
         private string CrearDataPrueba()
         {
