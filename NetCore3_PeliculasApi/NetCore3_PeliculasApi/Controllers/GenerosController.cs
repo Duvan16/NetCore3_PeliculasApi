@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetCore3_PeliculasApi.DTOs;
@@ -6,6 +9,7 @@ using NetCore3_PeliculasApi.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
@@ -44,6 +48,7 @@ namespace NetCore3_PeliculasApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> Delete(int id)
         {
             return await Delete<Genero>(id);
